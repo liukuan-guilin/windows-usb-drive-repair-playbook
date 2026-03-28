@@ -14,6 +14,9 @@ This repository explains how to repair a Windows USB flash drive that suddenly:
 - appears as `RAW`
 - triggers the "You need to format the disk" prompt
 - is still detected by Windows, but the files cannot be opened
+- looks empty because files were hidden by malware
+- shows many shortcuts instead of the real folders
+- reveals files again but some names look garbled after infection or unsafe removal
 
 This is a general recovery guide for normal Windows users.
 
@@ -38,6 +41,35 @@ What it does:
 - only writes a minimal MBR if the safe pattern is confirmed
 
 The executable requests administrator rights automatically when launched.
+
+## Another Common USB Problem: Hidden Files and Garbled Names
+
+Another frequent case is not a broken partition table, but malware that hides the real files and replaces them with shortcuts.
+
+Typical signs:
+
+- the USB drive suddenly looks empty
+- folders are replaced by `.lnk` shortcuts
+- `autorun.inf` or suspicious script files appear
+- after unhiding, some file names still look garbled
+
+For that case, use this helper:
+
+- [Start-Recover-Hidden-Files.cmd](Start-Recover-Hidden-Files.cmd)
+
+What it does:
+
+- lists USB drives and lets the user pick one
+- removes `Hidden`, `Read-only`, and `System` attributes
+- records before/after listings into a report folder
+- can move suspicious shortcut-virus files from the root into quarantine
+- explains what garbled names usually mean and what to do next
+
+Important limitation:
+
+- this helper restores visibility, but it cannot magically reconstruct every damaged file name
+- if names are corrupted but file contents still open, copy the files out first and rename them on your hard drive
+- if names and contents are both broken, use recovery tools instead of attribute repair
 
 ## Simple Guided Script
 
@@ -87,6 +119,9 @@ This kind of problem often happens after one of these events:
 - bad sectors near the beginning of the drive
 - partition-table corruption caused by disk tools or unexpected shutdowns
 - aging, low-quality, or counterfeit flash media
+- shortcut-virus infection that marks files as hidden/system
+- plugging the drive into infected public/shared computers
+- directory-entry damage that leaves filenames garbled after files become visible again
 
 ## Recovery Strategy
 
